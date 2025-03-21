@@ -1,8 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import { toast } from "react-toastify";
+import { loginUser } from "../features/auth/authSlice";
 
 const Login = () => {
   const { user, isLoading, isError, message } = useSelector(
@@ -11,6 +12,25 @@ const Login = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const { email, password } = formData;
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser(formData));
+  };
 
   useEffect(() => {
     if (user) {
@@ -45,11 +65,11 @@ const Login = () => {
             </Link>
           </p>
         </div>
-        <form className="mt-8 space-y-6">
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
               <label
-                for="email"
+                htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
                 Email address
@@ -57,6 +77,8 @@ const Login = () => {
               <input
                 id="email"
                 name="email"
+                value={email}
+                onChange={handleChange}
                 type="email"
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
@@ -64,7 +86,7 @@ const Login = () => {
             </div>
             <div>
               <label
-                for="password"
+                htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
                 Password
@@ -72,6 +94,8 @@ const Login = () => {
               <input
                 id="password"
                 name="password"
+                value={password}
+                onChange={handleChange}
                 type="password"
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
@@ -88,7 +112,7 @@ const Login = () => {
                 className="h-4 w-4 text-emerald-500 focus:ring-emerald-500 border-gray-300 rounded"
               />
               <label
-                for="remember-me"
+                htmlFor="remember-me"
                 className="ml-2 block text-sm text-gray-900"
               >
                 Remember me
