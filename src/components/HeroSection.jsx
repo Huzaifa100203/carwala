@@ -1,6 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  const [search, setSearch] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    navigate(`/search/${search}`);
+  };
+
   return (
     <section class="relative h-screen">
       <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3')] bg-cover bg-center">
@@ -22,16 +32,20 @@ const HeroSection = () => {
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <i class="bx bx-car text-gray-400 text-xl"></i>
               </div>
-              <input
-                type="text"
-                placeholder="Search by car name (e.g., Mercedes, BMW, Audi)"
-                class="w-full pl-11 pr-4 py-4 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-700"
-              />
+              <form className="flex" onSubmit={handleSearch}>
+                <input
+                  onChange={(e) => setSearch(e.target.value)}
+                  value={search}
+                  type="text"
+                  placeholder="Search by car name (e.g., Mercedes, BMW, Audi)"
+                  class="w-3/4 pl-11 pr-4 py-4 border-gray-200 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 text-gray-700"
+                />
+                <button class="w-1/4 bg-emerald-500 hover:bg-emerald-800 text-white px-8 py-4 rounded-lg transition-colors flex items-center justify-center space-x-2 flex-shrink-0">
+                  <i class="bx bx-search text-xl"></i>
+                  <span>Search</span>
+                </button>
+              </form>
             </div>
-            <button class="bg-emerald-500 hover:bg-emerald-800 text-white px-8 py-4 rounded-lg transition-colors flex items-center justify-center space-x-2 flex-shrink-0">
-              <i class="bx bx-search text-xl"></i>
-              <span>Search</span>
-            </button>
           </div>
         </div>
       </div>
