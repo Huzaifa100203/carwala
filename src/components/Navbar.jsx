@@ -29,14 +29,12 @@ const Navbar = () => {
           <div className="flex items-center space-x-8">
             {user ? (
               <>
-                <p className="text-sm md:text-base text-gray-700 hover:text-emerald-500 transition-colors uppercase">
-                  Welcome {user?.name}
-                </p>
+                <Link to={"/my-rentals"}>My Rentals</Link>
                 <button
                   onClick={handleLogOut}
-                  className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-emerald-800 transition-colors"
+                  className="bg-red-500 text-white px-6 py-2 rounded-full hover:bg-red-800 transition-colors text-sm font-bold hover:cursor-pointer"
                 >
-                  Logout
+                  {user.name} logout
                 </button>
               </>
             ) : (

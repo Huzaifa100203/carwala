@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CarDetails from "./pages/CarDetails";
 import SearchCars from "./pages/SearchCars";
+import MyRentals from "./pages/MyRentals";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/car/:id" element={<CarDetails />} />
         <Route path="/search/:query" element={<SearchCars />} />
+        <Route path="/my-rentals" element={<MyRentals />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
       </Routes>
