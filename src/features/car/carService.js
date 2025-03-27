@@ -11,7 +11,7 @@ const fetchCar = async (id) => {
 };
 
 const searchCar = async (query) => {
-  const response = await axios.get(`/api/car/?query=${query}`);
+  const response = await axios.get(`/api/car/search?query=${query}`);
   return response.data;
 };
 

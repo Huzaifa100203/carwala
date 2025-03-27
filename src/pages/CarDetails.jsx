@@ -1,31 +1,55 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaGasPump,
-  FaUsers,
-  FaTachometerAlt,
-  FaCog,
-  FaRegComment,
-  FaStar,
-} from "react-icons/fa";
+import { FaGasPump, FaUsers, FaRegComment, FaStar } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { getCar } from "../features/car/carSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
+import { addRental } from "../features/rental/rentalSlice";
 
 const CarDetails = () => {
   const { car, isLoading, isError, isSuccess, message } = useSelector(
     (state) => state.car
   );
 
+  const {
+    rental,
+    isRentalLoading,
+    isRentalSuccess,
+    isRentalError,
+    rentalErrorMessage,
+  } = useSelector((state) => state.rental);
+
   const { user } = useSelector((state) => state.auth);
-
-  let comments = [];
-  const [comment, setComment] = useState("");
-
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  let comments = [];
+  const [comment, setComment] = useState("");
+  const [pickupDate, setPickupDate] = useState("");
+  const [dropDate, setDropDate] = useState("");
+
+  const handleBooking = (e) => {
+    e.preventDefault();
+
+    let pickup = pickupDate.split("-");
+    let formattedPickup = `${pickup[1]}/${pickup[2]}/${pickup[0]}`;
+    let drop = dropDate.split("-");
+    let formattedDrop = `${drop[1]}/${drop[2]}/${drop[0]}`;
+
+    dispatch(
+      addRental({
+        id: id,
+        pickupDate: formattedPickup,
+        dropDate: formattedDrop,
+      })
+    );
+
+    if (isRentalSuccess) {
+      navigate("/my-rentals");
+    }
+  };
 
   useEffect(() => {
     dispatch(getCar(id));
@@ -39,7 +63,7 @@ const CarDetails = () => {
     }
   }, [id, isError, message, user]);
 
-  if (isLoading) {
+  if (isLoading || isRentalLoading) {
     return <Loader />;
   }
 
@@ -104,16 +128,32 @@ const CarDetails = () => {
 
           {/* Book Now Button */}
           <div className="mt-8">
-            <button
-              className={
-                car.isBooked
-                  ? "w-full bg-gray-500 text-white py-3 px-6 rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold disabled:cursor-not-allowed"
-                  : "w-full bg-emerald-500 text-white py-3 px-6 rounded-lg hover:bg-emerald-600 transition-colors text-lg font-semibold"
-              }
-              disabled={car.isBooked}
-            >
-              {car.isBooked ? "Not Available" : "Book Now"}
-            </button>
+            <form onSubmit={handleBooking}>
+              <label htmlFor="dropDate">Drop Date</label>
+              <input
+                value={dropDate}
+                onChange={(e) => setDropDate(e.target.value)}
+                type="date"
+                className="border border-green-200 p-4 rounded-md w-full my-1"
+              />
+              <label htmlFor="dropDate">Pickup Date</label>
+              <input
+                value={pickupDate}
+                onChange={(e) => setPickupDate(e.target.value)}
+                type="date"
+                className="border border-green-200 p-4 rounded-md w-full my-1"
+              />
+              <button
+                className={
+                  car.isBooked
+                    ? "w-full bg-gray-500 text-white py-3 px-6 rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold disabled:cursor-not-allowed"
+                    : "w-full bg-emerald-500 text-white py-3 px-6 rounded-lg hover:bg-emerald-600 transition-colors text-lg font-semibold"
+                }
+                disabled={car.isBooked}
+              >
+                {car.isBooked ? "Not Available" : "Book Now"}
+              </button>
+            </form>
           </div>
         </div>
       </div>

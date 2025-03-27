@@ -18,14 +18,24 @@ const MyRentals = () => {
     if (isError && message) {
       toast.error(message);
     }
-  }, [isError, message]);
+  }, []);
 
   if (isLoading) {
     return <Loader />;
   }
 
+  if (isError && message) {
+    return (
+      <div className="p-10 text-center">
+        <h2 className="text-3xl text-red-400 font-bold text-center mb-12 uppercase">
+          No Rentals Yet
+        </h2>
+      </div>
+    );
+  }
+
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="relative py-20 bg-gray-50">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12 uppercase">
           My Rentals
