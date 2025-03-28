@@ -31,6 +31,23 @@ const rentalSlice = createSlice({
         state.isRentalError = true;
         state.rentalErrorMessage = action.payload;
       })
+      .addCase(getRental.pending, (state, action) => {
+        state.isRentalLoading = true;
+        state.isRentalSuccess = false;
+        state.isRentalError = false;
+      })
+      .addCase(getRental.fulfilled, (state, action) => {
+        state.isRentalLoading = false;
+        state.isRentalSuccess = true;
+        state.rental = action.payload;
+        state.isRentalError = false;
+      })
+      .addCase(getRental.rejected, (state, action) => {
+        state.isRentalLoading = false;
+        state.isRentalSuccess = false;
+        state.isRentalError = true;
+        state.rentalErrorMessage = action.payload;
+      })
       .addCase(addRental.pending, (state, action) => {
         state.isRentalLoading = true;
         state.isRentalSuccess = false;
@@ -61,8 +78,22 @@ export const getRentals = createAsyncThunk(
     try {
       return await rentalService.fetchRentals(token);
     } catch (error) {
-      const rentalErrorMessage = error.response.data.rentalErrorMessage;
-      return thunkAPI.rejectWithValue(rentalErrorMessage);
+      const message = error.response.data.message;
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// GET Rental
+export const getRental = createAsyncThunk(
+  "FETCH/RENTAL",
+  async (cid, thunkAPI) => {
+    let token = thunkAPI.getState().auth.user.token;
+    try {
+      return await rentalService.fetchRental(cid, token);
+    } catch (error) {
+      const message = error.response.data.message;
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -75,8 +106,8 @@ export const addRental = createAsyncThunk(
     try {
       return await rentalService.createRental(formData, token);
     } catch (error) {
-      const rentalErrorMessage = error.response.data.rentalErrorMessage;
-      return thunkAPI.rejectWithValue(rentalErrorMessage);
+      const message = error.response.data.message;
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );

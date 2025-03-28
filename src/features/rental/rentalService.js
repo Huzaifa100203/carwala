@@ -11,6 +11,17 @@ const fetchRentals = async (token) => {
   return response.data;
 };
 
+const fetchRental = async (cid, token) => {
+  let options = {
+    headers: {
+      authorization: `Bearer ${token}`,
+    },
+  };
+
+  const response = await axios.get("/api/rentals/" + cid, options);
+  return response.data;
+};
+
 const createRental = async (formData, token) => {
   let options = {
     headers: {
@@ -23,10 +34,9 @@ const createRental = async (formData, token) => {
     formData,
     options
   );
-  console.log(response.data);
   return response.data;
 };
 
-const rentalService = { fetchRentals, createRental };
+const rentalService = { fetchRentals, createRental, fetchRental };
 
 export default rentalService;

@@ -9,7 +9,6 @@ import Register from "./pages/Register";
 import CarDetails from "./pages/CarDetails";
 import SearchCars from "./pages/SearchCars";
 import MyRentals from "./pages/MyRentals";
-
 const App = () => {
   return (
     <Router>

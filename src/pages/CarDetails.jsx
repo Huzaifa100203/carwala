@@ -5,7 +5,7 @@ import { getCar } from "../features/car/carSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader";
-import { addRental } from "../features/rental/rentalSlice";
+import { addRental, getRental } from "../features/rental/rentalSlice";
 
 const CarDetails = () => {
   const { car, isLoading, isError, isSuccess, message } = useSelector(
@@ -53,6 +53,7 @@ const CarDetails = () => {
 
   useEffect(() => {
     dispatch(getCar(id));
+    dispatch(getRental(id));
 
     if (!user) {
       navigate("/login");
@@ -61,7 +62,7 @@ const CarDetails = () => {
     if (isError && message) {
       toast.error(message);
     }
-  }, [id, isError, message, user]);
+  }, [id, user]);
 
   if (isLoading || isRentalLoading) {
     return <Loader />;
@@ -128,32 +129,45 @@ const CarDetails = () => {
 
           {/* Book Now Button */}
           <div className="mt-8">
-            <form onSubmit={handleBooking}>
-              <label htmlFor="dropDate">Drop Date</label>
-              <input
-                value={dropDate}
-                onChange={(e) => setDropDate(e.target.value)}
-                type="date"
-                className="border border-green-200 p-4 rounded-md w-full my-1"
-              />
-              <label htmlFor="dropDate">Pickup Date</label>
-              <input
-                value={pickupDate}
-                onChange={(e) => setPickupDate(e.target.value)}
-                type="date"
-                className="border border-green-200 p-4 rounded-md w-full my-1"
-              />
-              <button
-                className={
-                  car.isBooked
-                    ? "w-full bg-gray-500 text-white py-3 px-6 rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold disabled:cursor-not-allowed"
-                    : "w-full bg-emerald-500 text-white py-3 px-6 rounded-lg hover:bg-emerald-600 transition-colors text-lg font-semibold"
-                }
-                disabled={car.isBooked}
-              >
-                {car.isBooked ? "Not Available" : "Book Now"}
-              </button>
-            </form>
+            {!rentalErrorMessage ? (
+              <form onSubmit={handleBooking}>
+                <label htmlFor="dropDate">Car Will Be Available On : </label>
+                <input
+                  value={rental?.rental?.dropDate}
+                  onChange={(e) => setDropDate(e.target.value)}
+                  type="text"
+                  className="border border-green-200 p-4 rounded-md w-full my-1"
+                  disabled
+                />
+              </form>
+            ) : (
+              <form onSubmit={handleBooking}>
+                <label htmlFor="dropDate">Drop Date</label>
+                <input
+                  value={dropDate}
+                  onChange={(e) => setDropDate(e.target.value)}
+                  type="date"
+                  className="border border-green-200 p-4 rounded-md w-full my-1"
+                />
+                <label htmlFor="dropDate">Pickup Date</label>
+                <input
+                  value={pickupDate}
+                  onChange={(e) => setPickupDate(e.target.value)}
+                  type="date"
+                  className="border border-green-200 p-4 rounded-md w-full my-1"
+                />
+                <button
+                  className={
+                    car.isBooked
+                      ? "w-full bg-gray-500 text-white py-3 px-6 rounded-lg hover:bg-gray-600 transition-colors text-lg font-semibold disabled:cursor-not-allowed"
+                      : "w-full bg-emerald-500 text-white py-3 px-6 rounded-lg hover:bg-emerald-600 transition-colors text-lg font-semibold"
+                  }
+                  disabled={car.isBooked}
+                >
+                  {car.isBooked ? "Not Available" : "Book Now"}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
